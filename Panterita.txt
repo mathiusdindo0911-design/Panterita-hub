@@ -1,0 +1,60 @@
+-- ==========================================================
+-- PANTERITA HUB V2 - MAESTRO (OPTIMIZADO PARA DELTA)
+-- ==========================================================
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Acceso Bypass
+if LocalPlayer.Name ~= "atutunes2014" then
+    local Screen = Instance.new("ScreenGui", game.CoreGui)
+    local Box = Instance.new("TextBox", Screen); Box.Size = UDim2.new(0, 200, 0, 50); Box.Position = UDim2.new(0.5, -100, 0.5, -25); Box.PlaceholderText = "KEY..."
+    Box.FocusLost:Connect(function(enter)
+        if enter and (Box.Text == "panterita_free+654") then Screen:Destroy() else game:Shutdown() end
+    end)
+    repeat task.wait() until not Screen.Parent
+end
+
+local Window = Rayfield:CreateWindow({Name = "Panterita Hub V2", LoadingTitle = "Cargando..."})
+
+-- Pestañas
+local T1 = Window:CreateTab("Personaje", 4483362458)
+local T2 = Window:CreateTab("Hacks", 4483362458)
+local T3 = Window:CreateTab("Avatar", 4483362458)
+local T4 = Window:CreateTab("Admin", 4483362458)
+
+-- Personaje
+T1:CreateSlider({Name = "Velocidad", Range = {16, 250}, Callback = function(v) LocalPlayer.Character.Humanoid.WalkSpeed = v end})
+T1:CreateToggle({Name = "Salto Infinito", Callback = function(v) _G.Inf = v end})
+
+-- Hacks
+T2:CreateToggle({Name = "Noclip", Callback = function(v) _G.Noc = v end})
+T2:CreateToggle({Name = "ESP (Highlight)", Callback = function(v) 
+    for _,p in pairs(Players:GetPlayers()) do 
+        if p.Character and p ~= LocalPlayer then 
+            local h = Instance.new("Highlight", p.Character)
+            if not v then h:Destroy() end
+        end
+    end
+end})
+
+-- Avatar
+T3:CreateInput({Name = "ID Camisa", Callback = function(v) 
+    local d = LocalPlayer.Character.Humanoid:GetAppliedDescription()
+    d.Shirt = tonumber(v)
+    LocalPlayer.Character.Humanoid:ApplyDescription(d)
+end})
+
+-- Admin (Whitelist)
+if LocalPlayer.Name == "atutunes2014" then
+    T4:CreateButton({Name = "BANEAR JUGADOR (TEST)", Callback = function() Rayfield:Notify({Title = "Admin", Content = "Baneado"}) end})
+end
+
+-- Lógica de fondo
+RunService.Stepped:Connect(function()
+    if _G.Noc and LocalPlayer.Character then 
+        for _,p in pairs(LocalPlayer.Character:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end 
+    end
+    if _G.Inf and game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.Space) then LocalPlayer.Character.Humanoid:ChangeState("Jumping") end
+end)
